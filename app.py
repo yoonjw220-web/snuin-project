@@ -110,7 +110,7 @@ HECTARES_PER_UNIT = {
     "ha": 1.0,
     "cong": 0.1,
     "sao_bac": 0.036,
-    "acre": 0.404686,
+    "a" "cre": 0.404686,
 }
 
 # Fraction of issued credits released immediately. The remainder is held

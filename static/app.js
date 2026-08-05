@@ -558,14 +558,14 @@
     var items = [
       { value: estimate.straw_collected_t + " t", label: "Straw collected" },
       { value: estimate.biochar_mass_t + " t", label: "Biochar made" },
-      { value: estimate.tonnes_low + "–" + estimate.tonnes_high + " t", label: "CO₂ locked in" }
+      { value: estimate.tonnes_low + "\u2013" + estimate.tonnes_high + " t", label: "CO\u2082 locked in" }
     ];
     items.forEach(function (item, index) {
       var card = el("div");
       card.appendChild(el("b", null, item.value));
       card.appendChild(el("span", null, item.label));
       chain.appendChild(card);
-      if (index < items.length - 1) chain.appendChild(el("em", null, "→"));
+      if (index < items.length - 1) chain.appendChild(el("em", null, "\u2192"));
     });
   }
 
@@ -891,34 +891,34 @@
       return n;
     }
 
-    shape("rect", { x: 0, y: 112, width: 300, height: 38, fill: "#EEF4E3" });
+    shape("rect", { x: 0, y: 112, width: 300, height: 38, fill: "#DCFCE7" });
 
     var scenes = {
       /* Straw burning in the open: carbon drifting away as smoke, nothing
          left behind. */
       flame: function () {
-        shape("path", { d: "M120 114 L150 70 L180 114 Z", fill: "#FCF2DF", stroke: "#96590A", "stroke-width": 2 });
+        shape("path", { d: "M120 114 L150 70 L180 114 Z", fill: "#FEF3C7", stroke: "#B45309", "stroke-width": 2 });
         [128, 139, 150, 161, 172].forEach(function (x, i) {
-          shape("line", { x1: x, y1: 112, x2: 150, y2: 80 - (i % 2) * 4, stroke: "#96590A", "stroke-width": 1.2, opacity: 0.5 });
+          shape("line", { x1: x, y1: 112, x2: 150, y2: 80 - (i % 2) * 4, stroke: "#B45309", "stroke-width": 1.2, opacity: 0.5 });
         });
         shape("path", {
           d: "M150 44c9 12 15 18 15 27a15 15 0 0 1-30 0c0-6 3-9 6-12 0 6 3 9 6 9 0-9-3-15 3-24z",
-          fill: "#B4451A"
+          fill: "#C2410C"
         });
-        shape("path", { d: "M156 40c6-10 2-18 8-26", fill: "none", stroke: "#756A5E", "stroke-width": 3, "stroke-linecap": "round", opacity: 0.45 });
-        shape("path", { d: "M165 47c8-9 4-19 13-25", fill: "none", stroke: "#756A5E", "stroke-width": 3, "stroke-linecap": "round", opacity: 0.28 });
-        shape("path", { d: "M173 55c10-6 8-17 19-21", fill: "none", stroke: "#756A5E", "stroke-width": 3, "stroke-linecap": "round", opacity: 0.15 });
+        shape("path", { d: "M156 40c6-10 2-18 8-26", fill: "none", stroke: "#5C6F64", "stroke-width": 3, "stroke-linecap": "round", opacity: 0.45 });
+        shape("path", { d: "M165 47c8-9 4-19 13-25", fill: "none", stroke: "#5C6F64", "stroke-width": 3, "stroke-linecap": "round", opacity: 0.28 });
+        shape("path", { d: "M173 55c10-6 8-17 19-21", fill: "none", stroke: "#5C6F64", "stroke-width": 3, "stroke-linecap": "round", opacity: 0.15 });
       },
       /* Ash versus biochar: pale dust that blows away, next to solid dark
          chunks that hold together. */
       layers: function () {
         [[58, 96, 5], [74, 101, 4], [48, 106, 5], [66, 108, 4], [86, 92, 4], [96, 102, 5]].forEach(function (p) {
-          shape("circle", { cx: p[0], cy: p[1], r: p[2], fill: "#E3DACB" });
+          shape("circle", { cx: p[0], cy: p[1], r: p[2], fill: "#E0E7E1" });
         });
-        shape("line", { x1: 150, y1: 55, x2: 150, y2: 112, stroke: "#E3DACB", "stroke-width": 2, "stroke-dasharray": "4 5" });
-        shape("rect", { x: 200, y: 74, width: 22, height: 18, rx: 4, fill: "#4A4038" });
-        shape("rect", { x: 183, y: 90, width: 34, height: 22, rx: 5, fill: "#241E18" });
-        shape("rect", { x: 221, y: 98, width: 26, height: 16, rx: 4, fill: "#241E18" });
+        shape("line", { x1: 150, y1: 55, x2: 150, y2: 112, stroke: "#E0E7E1", "stroke-width": 2, "stroke-dasharray": "4 5" });
+        shape("rect", { x: 200, y: 74, width: 22, height: 18, rx: 4, fill: "#3B4B41" });
+        shape("rect", { x: 183, y: 90, width: 34, height: 22, rx: 5, fill: "#0F1E15" });
+        shape("rect", { x: 221, y: 98, width: 26, height: 16, rx: 4, fill: "#0F1E15" });
       },
       /* Gathering straw: some stalks left standing, one bundle tied and
          carried off. */
@@ -927,91 +927,91 @@
           var lean = (i % 2) * 5;
           shape("path", {
             d: "M" + x + " 112 L" + x + " " + (80 - lean) + " Q " + (x + 5) + " " + (70 - lean) + " " + (x + 9) + " " + (76 - lean),
-            stroke: "#96590A", "stroke-width": 2.4, fill: "none", "stroke-linecap": "round"
+            stroke: "#B45309", "stroke-width": 2.4, fill: "none", "stroke-linecap": "round"
           });
         });
         shape("path", {
           d: "M205 112 C195 90 200 66 220 58 C240 66 245 90 235 112 Z",
-          fill: "#FCF2DF", stroke: "#96590A", "stroke-width": 2
+          fill: "#FEF3C7", stroke: "#B45309", "stroke-width": 2
         });
-        shape("line", { x1: 198, y1: 88, x2: 242, y2: 88, stroke: "#8A3413", "stroke-width": 3 });
+        shape("line", { x1: 198, y1: 88, x2: 242, y2: 88, stroke: "#9A3412", "stroke-width": 3 });
       },
       /* The kiln running: straw fed in from the side, one steady flame,
          only a little smoke. */
       fire: function () {
-        shape("ellipse", { cx: 150, cy: 70, rx: 30, ry: 7, fill: "#241E18" });
-        shape("rect", { x: 120, y: 70, width: 60, height: 44, rx: 6, fill: "#4A4038" });
-        shape("path", { d: "M96 54 L119 72", stroke: "#96590A", "stroke-width": 6, "stroke-linecap": "round", opacity: 0.75 });
-        shape("path", { d: "M90 62 L112 78", stroke: "#96590A", "stroke-width": 6, "stroke-linecap": "round" });
+        shape("ellipse", { cx: 150, cy: 70, rx: 30, ry: 7, fill: "#0F1E15" });
+        shape("rect", { x: 120, y: 70, width: 60, height: 44, rx: 6, fill: "#3B4B41" });
+        shape("path", { d: "M96 54 L119 72", stroke: "#B45309", "stroke-width": 6, "stroke-linecap": "round", opacity: 0.75 });
+        shape("path", { d: "M90 62 L112 78", stroke: "#B45309", "stroke-width": 6, "stroke-linecap": "round" });
         shape("path", {
           d: "M150 40c7 9 11 14 11 20a11 11 0 0 1-22 0c0-4 2-7 4-9 0 4 2 6 4 6 0-6-2-11 3-17z",
-          fill: "#B4451A"
+          fill: "#C2410C"
         });
-        shape("path", { d: "M159 36c4-6 1-10 4-15", fill: "none", stroke: "#756A5E", "stroke-width": 2.2, "stroke-linecap": "round", opacity: 0.3 });
+        shape("path", { d: "M159 36c4-6 1-10 4-15", fill: "none", stroke: "#5C6F64", "stroke-width": 2.2, "stroke-linecap": "round", opacity: 0.3 });
       },
       /* Stopping the burn at the right moment: water going onto the char
          while it is still dark, before it turns to ash. */
       drop: function () {
-        shape("ellipse", { cx: 150, cy: 70, rx: 30, ry: 7, fill: "#241E18" });
-        shape("rect", { x: 120, y: 70, width: 60, height: 44, rx: 6, fill: "#4A4038" });
+        shape("ellipse", { cx: 150, cy: 70, rx: 30, ry: 7, fill: "#0F1E15" });
+        shape("rect", { x: 120, y: 70, width: 60, height: 44, rx: 6, fill: "#3B4B41" });
         shape("path", {
           d: "M150 52c4 5 6 8 6 11a6 6 0 0 1-12 0c0-2 1-4 2-5 0 2 1 3 2 3 0-3-1-6 2-9z",
-          fill: "#8A3413", opacity: 0.75
+          fill: "#9A3412", opacity: 0.75
         });
         shape("path", {
           d: "M150 16c5 7 8 12 8 17a8 8 0 0 1-16 0c0-5 3-10 8-17z",
-          fill: "#756A5E"
+          fill: "#5C6F64"
         });
-        shape("path", { d: "M137 46c3-4 0-8 3-12", stroke: "#756A5E", "stroke-width": 2.2, fill: "none", "stroke-linecap": "round", opacity: 0.4 });
-        shape("path", { d: "M163 46c-3-4 0-8-3-12", stroke: "#756A5E", "stroke-width": 2.2, fill: "none", "stroke-linecap": "round", opacity: 0.4 });
+        shape("path", { d: "M137 46c3-4 0-8 3-12", stroke: "#5C6F64", "stroke-width": 2.2, fill: "none", "stroke-linecap": "round", opacity: 0.4 });
+        shape("path", { d: "M163 46c-3-4 0-8-3-12", stroke: "#5C6F64", "stroke-width": 2.2, fill: "none", "stroke-linecap": "round", opacity: 0.4 });
       },
       /* Working the biochar into the topsoil, and something growing from
          it afterwards. */
       sprout: function () {
         [[75, 125], [100, 133], [130, 121], [162, 131], [192, 123], [222, 134], [248, 119]].forEach(function (p) {
-          shape("circle", { cx: p[0], cy: p[1], r: 3, fill: "#241E18", opacity: 0.55 });
+          shape("circle", { cx: p[0], cy: p[1], r: 3, fill: "#0F1E15", opacity: 0.55 });
         });
-        shape("path", { d: "M150 112 L150 78", stroke: "#3F6B1E", "stroke-width": 3, "stroke-linecap": "round" });
-        shape("path", { d: "M150 90c-4-10-16-12-22-8 3 11 14 14 22 8z", fill: "#3F6B1E" });
-        shape("path", { d: "M150 82c4-10 16-12 22-8-3 11-14 14-22 8z", fill: "#3F6B1E" });
+        shape("path", { d: "M150 112 L150 78", stroke: "#166534", "stroke-width": 3, "stroke-linecap": "round" });
+        shape("path", { d: "M150 90c-4-10-16-12-22-8 3 11 14 14 22 8z", fill: "#166534" });
+        shape("path", { d: "M150 82c4-10 16-12 22-8-3 11-14 14-22 8z", fill: "#166534" });
       },
       /* The kiln kept away from buildings, water within reach — the
          precautions, not the danger. */
       shield: function () {
-        shape("ellipse", { cx: 61, cy: 86, rx: 17, ry: 4, fill: "#241E18" });
-        shape("rect", { x: 44, y: 86, width: 34, height: 26, rx: 5, fill: "#4A4038" });
+        shape("ellipse", { cx: 61, cy: 86, rx: 17, ry: 4, fill: "#0F1E15" });
+        shape("rect", { x: 44, y: 86, width: 34, height: 26, rx: 5, fill: "#3B4B41" });
         shape("path", {
           d: "M61 66c4 5 6 8 6 11a6 6 0 0 1-12 0c0-2 1-4 2-5 0 2 1 3 2 3 0-3-1-6 2-9z",
-          fill: "#B4451A"
+          fill: "#C2410C"
         });
-        shape("line", { x1: 90, y1: 112, x2: 150, y2: 112, stroke: "#756A5E", "stroke-width": 2, "stroke-dasharray": "3 5", opacity: 0.6 });
-        shape("path", { d: "M170 92 L200 92 L195 116 L175 116 Z", fill: "#756A5E" });
-        shape("path", { d: "M175 92c3-8 17-8 20 0", fill: "none", stroke: "#4A4038", "stroke-width": 2.4 });
+        shape("line", { x1: 90, y1: 112, x2: 150, y2: 112, stroke: "#5C6F64", "stroke-width": 2, "stroke-dasharray": "3 5", opacity: 0.6 });
+        shape("path", { d: "M170 92 L200 92 L195 116 L175 116 Z", fill: "#5C6F64" });
+        shape("path", { d: "M175 92c3-8 17-8 20 0", fill: "none", stroke: "#3B4B41", "stroke-width": 2.4 });
         shape("path", {
           d: "M230 58l16 6v13c0 10-7 17-16 21-9-4-16-11-16-21V64z",
-          fill: "none", stroke: "#B4451A", "stroke-width": 2.4
+          fill: "none", stroke: "#C2410C", "stroke-width": 2.4
         });
         shape("path", {
-          d: "M222 78l6 6 10-11", fill: "none", stroke: "#B4451A", "stroke-width": 2.4,
+          d: "M222 78l6 6 10-11", fill: "none", stroke: "#C2410C", "stroke-width": 2.4,
           "stroke-linecap": "round", "stroke-linejoin": "round"
         });
       },
       /* Photographing the whole heap, in daylight, not a close-up. */
       camera: function () {
-        shape("circle", { cx: 245, cy: 34, r: 11, fill: "#96590A" });
+        shape("circle", { cx: 245, cy: 34, r: 11, fill: "#B45309" });
         [0, 45, 90, 135, 180, 225, 270, 315].forEach(function (a) {
           var rad = a * Math.PI / 180;
           shape("line", {
             x1: 245 + Math.cos(rad) * 16, y1: 34 + Math.sin(rad) * 16,
             x2: 245 + Math.cos(rad) * 21, y2: 34 + Math.sin(rad) * 21,
-            stroke: "#96590A", "stroke-width": 2, "stroke-linecap": "round"
+            stroke: "#B45309", "stroke-width": 2, "stroke-linecap": "round"
           });
         });
-        shape("path", { d: "M68 112 L148 112 L126 76 L90 76 Z", fill: "#FCF2DF", stroke: "#96590A", "stroke-width": 2 });
-        shape("rect", { x: 178, y: 70, width: 70, height: 48, rx: 8, fill: "#241E18" });
-        shape("rect", { x: 198, y: 58, width: 20, height: 14, rx: 3, fill: "#241E18" });
-        shape("circle", { cx: 213, cy: 94, r: 16, fill: "#4A4038" });
-        shape("circle", { cx: 213, cy: 94, r: 9, fill: "#1A1512" });
+        shape("path", { d: "M68 112 L148 112 L126 76 L90 76 Z", fill: "#FEF3C7", stroke: "#B45309", "stroke-width": 2 });
+        shape("rect", { x: 178, y: 70, width: 70, height: 48, rx: 8, fill: "#0F1E15" });
+        shape("rect", { x: 198, y: 58, width: 20, height: 14, rx: 3, fill: "#0F1E15" });
+        shape("circle", { cx: 213, cy: 94, r: 16, fill: "#3B4B41" });
+        shape("circle", { cx: 213, cy: 94, r: 9, fill: "#0F1E15" });
       }
     };
 
@@ -1528,11 +1528,11 @@
     if (boundaryLayer) { map.removeLayer(boundaryLayer); boundaryLayer = null; }
     if (boundaryPoints.length >= 2) {
       boundaryLayer = L.polygon(boundaryPoints, {
-        color: "#B4451A", weight: 2, fillOpacity: 0.15
+        color: "#C2410C", weight: 2, fillOpacity: 0.15
       }).addTo(map);
     } else if (boundaryPoints.length === 1) {
       boundaryLayer = L.circleMarker(boundaryPoints[0], {
-        radius: 5, color: "#B4451A"
+        radius: 5, color: "#C2410C"
       }).addTo(map);
     }
     updateBoundaryStatus();
