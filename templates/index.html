@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CarbonBridge — Turn rice straw into income</title>
+<meta name="description" content="CarbonBridge helps smallholder rice farmers in India turn straw into biochar and earn income from independently verified carbon removal.">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<header class="appbar" id="appbar" hidden>
+  <button class="appbar-back" id="btn-back" type="button" aria-label="Go back">
+    <span aria-hidden="true">&#8592;</span>
+  </button>
+  <span class="appbar-title" id="appbar-title">CarbonBridge</span>
+  <button class="appbar-home" id="btn-home" type="button">Home</button>
+  <div class="cb-prog" id="cb-prog" hidden aria-hidden="true"><i></i></div>
+</header>
+
+<main id="main">
+
+<!-- =====================================================================
+     1. LANDING
+     ================================================================== -->
+<section class="screen" data-screen="landing" hidden>
+  <div class="wrap">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">CarbonBridge</span>
+    </div>
+
+    <h1 class="hero-title">Your rice straw is worth money.</h1>
+    <p class="hero-sub">
+      Instead of burning straw after harvest, turn it into biochar and put it
+      back in your soil. The carbon stays locked in the ground, and companies
+      pay for that.
+    </p>
+
+    <div class="hero-figure" aria-hidden="true">
+      <div class="hf-col">
+        <div class="hf-box hf-burn">
+          <span class="hf-icon">&#9650;</span>
+          <span class="hf-label">Burned</span>
+          <span class="hf-note">Carbon lost to the air</span>
+        </div>
+      </div>
+      <div class="hf-arrow">&#8594;</div>
+      <div class="hf-col">
+        <div class="hf-box hf-char">
+          <span class="hf-icon">&#9632;</span>
+          <span class="hf-label">Biochar</span>
+          <span class="hf-note">Carbon held for centuries</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-block" data-go="estimator">
+      See what your field could earn
+    </button>
+    <p class="hero-foot">Takes one minute. No account needed.</p>
+
+    <div class="landing-points">
+      <div class="lp">
+        <span class="lp-num">1</span>
+        <div>
+          <strong>Nothing to pay, ever</strong>
+          <p>No joining fee. No cost for the kiln, the verification or the registry.</p>
+        </div>
+      </div>
+      <div class="lp">
+        <span class="lp-num">2</span>
+        <div>
+          <strong>Money before the credits sell</strong>
+          <p>Take part of your payment early if you need it for the next planting.</p>
+        </div>
+      </div>
+      <div class="lp">
+        <span class="lp-num">3</span>
+        <div>
+          <strong>Checked by someone independent</strong>
+          <p>CarbonBridge prepares the paperwork. An independent verifier decides.</p>
+        </div>
+      </div>
+    </div>
+
+    <button class="linkbtn" data-go="terms">Read the fees and terms</button>
+  </div>
+</section>
+
+<!-- =====================================================================
+     2. ESTIMATOR
+     ================================================================== -->
+<section class="screen" data-screen="estimator" hidden>
+  <div class="wrap">
+    <h1 class="screen-title">Three questions</h1>
+    <p class="screen-sub">This gives you a first estimate of what your field could earn each year.</p>
+
+    <form id="form-estimate" novalidate>
+      <div class="field">
+        <label class="label" for="est-size">How big is your field?</label>
+        <div class="input-suffix">
+          <input class="input" id="est-size" name="farm_size" type="number"
+                 inputmode="decimal" step="0.1" min="0.05" max="500"
+                 placeholder="1.0" autocomplete="off" required
+                 aria-describedby="est-size-err">
+          <span class="suffix" id="est-unit-label">ha</span>
+        </div>
+        <div class="cb-unit" role="group" aria-label="Area unit">
+          <button type="button" data-unit="ha" aria-pressed="true">Hecta (ha)</button>
+          <button type="button" data-unit="cong" aria-pressed="false">Công (1.000 m²)</button>
+        </div>
+        <p class="cb-unit-note" id="est-unit-note" hidden>1 công = 0,1 ha</p>
+        <p class="err" id="est-size-err" role="alert" hidden></p>
+      </div>
+
+      <fieldset class="field">
+        <legend class="label">What happens to your straw today?</legend>
+        <div class="choices" id="est-practice" role="radiogroup"
+             aria-describedby="est-practice-err"></div>
+        <p class="err" id="est-practice-err" role="alert" hidden></p>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend class="label">How many rice seasons each year?</legend>
+        <div class="segmented" id="est-seasons" role="radiogroup">
+          <button type="button" class="seg" data-value="1" role="radio" aria-checked="false">1</button>
+          <button type="button" class="seg is-on" data-value="2" role="radio" aria-checked="true">2</button>
+          <button type="button" class="seg" data-value="3" role="radio" aria-checked="false">3</button>
+        </div>
+      </fieldset>
+
+      <button class="btn btn-primary btn-block" type="submit" id="btn-estimate">
+        Calculate my estimated income
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- =====================================================================
+     3. ESTIMATE RESULT
+     ================================================================== -->
+<section class="screen" data-screen="estimate-result" hidden>
+  <div class="wrap">
+    <span class="stage-tag" id="er-stage">AI estimate</span>
+    <p class="screen-sub" id="er-stage-note"></p>
+
+    <div class="money-card">
+      <span class="money-label">You could earn this season</span>
+      <span class="money-value" id="er-income"></span>
+      <span class="money-note">Estimate · not a guaranteed payment</span>
+    </div>
+
+    <section class="amount-explainer" aria-labelledby="er-share-title">
+      <div class="amount-explainer-head">
+        <h2 id="er-share-title">Where the credit sale goes</h2>
+        <p>This share is visible before you join. You are never asked to pay these costs directly.</p>
+      </div>
+      <ul class="allocation-list" id="er-split"></ul>
+    </section>
+
+    <div class="callout callout-warn">
+      <strong>This is an estimate, not a promise.</strong>
+      <p id="er-disclaimer"></p>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat">
+        <span class="stat-label">Carbon removed each year</span>
+        <span class="stat-value" id="er-tonnes"></span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Confidence in this estimate</span>
+        <span class="stat-value" id="er-confidence"></span>
+      </div>
+    </div>
+
+    <div class="callout" id="er-practice-note-box">
+      <p id="er-practice-note"></p>
+    </div>
+
+    <div class="callout callout-warn" id="er-minimum-box" hidden>
+      <p id="er-minimum-note"></p>
+    </div>
+
+    <div class="cb-chain" id="er-chain" aria-label="Estimate chain"></div>
+
+    <details class="disclose">
+      <summary>How we worked this out</summary>
+      <ul class="tick-list" id="er-assumptions"></ul>
+    </details>
+
+    <details class="disclose">
+      <summary>What the full system will use</summary>
+      <p class="small">
+        Today this estimate uses only the three answers you gave. Once your
+        field is registered, the model also draws on data we look up for you:
+      </p>
+      <ul class="chip-list" id="er-features"></ul>
+      <p class="small">
+        Each of the three stages below is a different number. They are never
+        mixed up.
+      </p>
+      <ol class="stage-list">
+        <li><strong>AI estimate</strong> — before you register, from three answers.</li>
+        <li><strong>Updated project estimate</strong> — after your field location and details are known.</li>
+        <li><strong>Final verified result</strong> — decided by an independent verifier and the registry.</li>
+      </ol>
+    </details>
+
+    <button class="btn btn-primary btn-block" data-go="signup">
+      Get a more accurate estimate
+    </button>
+    <button class="linkbtn" data-go="estimator">Change my answers</button>
+  </div>
+</section>
+
+<!-- =====================================================================
+     4. SIGNUP + OTP
+     ================================================================== -->
+<section class="screen" data-screen="signup" hidden>
+  <div class="wrap">
+    <h1 class="screen-title">Your phone number</h1>
+    <p class="screen-sub">No email, no password. Just your number.</p>
+
+    <form id="form-signup" novalidate>
+      <div class="field">
+        <label class="label" for="su-name">Your name</label>
+        <input class="input" id="su-name" type="text" autocomplete="name"
+               placeholder="{{ demo.farmer_name }}" required
+               aria-describedby="su-name-err">
+        <p class="err" id="su-name-err" role="alert" hidden></p>
+      </div>
+
+      <div class="field">
+        <label class="label" for="su-mobile">Mobile number</label>
+        <input class="input" id="su-mobile" type="tel" inputmode="tel"
+               autocomplete="tel" placeholder="091 234 5678" required
+               aria-describedby="su-mobile-err su-mobile-hint">
+        <p class="hint" id="su-mobile-hint">9–10 digits, without +84</p>
+        <p class="err" id="su-mobile-err" role="alert" hidden></p>
+      </div>
+
+      <button class="btn btn-primary btn-block" type="submit" id="btn-send-otp">
+        Send code
+      </button>
+    </form>
+
+    <div id="otp-block" hidden>
+      <hr class="rule">
+      <div class="field">
+        <label class="label" for="su-otp">Enter the 6-digit code</label>
+        <input class="input input-otp" id="su-otp" type="text"
+               inputmode="numeric" maxlength="6" placeholder="000000"
+               autocomplete="one-time-code" aria-describedby="su-otp-err su-otp-hint">
+        <p class="hint" id="su-otp-hint">
+          Demo code: <strong>{{ demo.otp_code }}</strong> — this prototype does
+          not send a real message.
+        </p>
+        <p class="err" id="su-otp-err" role="alert" hidden></p>
+      </div>
+      <button class="btn btn-primary btn-block" type="button" id="btn-verify-otp">
+        Verify and continue
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     5. CONSENT
+     ================================================================== -->
+<section class="screen" data-screen="consent" hidden>
+  <div class="wrap">
+    <h1 class="screen-title">Before we go further</h1>
+    <p class="screen-sub">
+      You decide what you share. You can withdraw at any time, and your field
+      leaves the project without penalty.
+    </p>
+
+    <div class="consent-list">
+      <div class="consent-item">
+        <strong>Where your field is</strong>
+        <p>So your batches can be matched to the right field, and so the same
+           field is not entered into two projects.</p>
+      </div>
+      <div class="consent-item">
+        <strong>Photos you take</strong>
+        <p>These are the evidence an independent verifier looks at. Without
+           them, no credits can be issued.</p>
+      </div>
+      <div class="consent-item">
+        <strong>Weights you record</strong>
+        <p>How much straw went in and how much biochar came out.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Who sees it</strong>
+      <p>CarbonBridge staff, the independent verifier reviewing your project,
+         and the carbon registry. It is not sold to anyone, and buyers see
+         only totals, never your name or your photos.</p>
+    </div>
+
+    <label class="check">
+      <input type="checkbox" id="consent-check">
+      <span>I understand and agree to share this information.</span>
+    </label>
+
+    <button class="btn btn-primary btn-block" id="btn-consent" disabled>
+      Continue
+    </button>
+    <button class="linkbtn" data-go="terms">Read the full terms and fees</button>
+  </div>
+</section>
+
+<!-- =====================================================================
+     6. FARM REGISTRATION
+     ================================================================== -->
+<section class="screen" data-screen="farm" hidden>
+  <div class="wrap">
+    <h1 class="screen-title">Register your field</h1>
+    <p class="screen-sub">Start with a quick registration. You can draw the exact boundary later.</p>
+
+    <div class="tabs" role="tablist">
+      <button class="tab is-on" role="tab" data-tab="quick" aria-selected="true">Quick</button>
+      <button class="tab" role="tab" data-tab="precise" aria-selected="false">Exact boundary</button>
+    </div>
+
+    <form id="form-farm" novalidate>
+      <div class="field">
+        <label class="label" for="fm-name">Field name</label>
+        <input class="input" id="fm-name" type="text"
+               placeholder="{{ demo.field_name }}" required
+               aria-describedby="fm-name-err">
+        <p class="hint">Any name you will recognise.</p>
+        <p class="err" id="fm-name-err" role="alert" hidden></p>
+      </div>
+
+      <div class="field">
+        <label class="label" for="fm-size">Field size</label>
+        <div class="input-suffix">
+          <input class="input" id="fm-size" type="number" inputmode="decimal"
+                 step="0.1" min="0.05" max="500" placeholder="1.0" required
+                 aria-describedby="fm-size-err">
+          <span class="suffix" id="fm-unit-label">ha</span>
+        </div>
+        <p class="err" id="fm-size-err" role="alert" hidden></p>
+      </div>
+
+      <fieldset class="field">
+        <legend class="label">Do you own this land?</legend>
+        <div class="segmented" id="fm-ownership" role="radiogroup">
+          <button type="button" class="seg is-on" data-value="owner" role="radio" aria-checked="true">I own it</button>
+          <button type="button" class="seg" data-value="tenant" role="radio" aria-checked="false">I rent it</button>
+        </div>
+      </fieldset>
+
+      <div class="field">
+        <span class="label">Where is the field?</span>
+        <div class="map-wrap">
+          <div id="map" class="map" role="application" aria-label="Field location map"></div>
+          <div id="map-fallback" class="map-fallback" hidden>
+            <p>The map could not load. Enter the location by hand instead.</p>
+          </div>
+        </div>
+
+        <button class="btn btn-secondary btn-block" type="button" id="btn-locate">
+          Use my current location
+        </button>
+        <p class="hint" id="locate-status" aria-live="polite"></p>
+
+        <div class="manual-coords" id="manual-coords">
+          <div class="coord">
+            <label class="label-sm" for="fm-lat">Latitude</label>
+            <input class="input input-sm" id="fm-lat" type="number" step="any"
+                   inputmode="decimal" placeholder="30.9010">
+          </div>
+          <div class="coord">
+            <label class="label-sm" for="fm-lng">Longitude</label>
+            <input class="input input-sm" id="fm-lng" type="number" step="any"
+                   inputmode="decimal" placeholder="75.8573">
+          </div>
+        </div>
+        <p class="err" id="fm-loc-err" role="alert" hidden></p>
+      </div>
+
+      <div id="precise-panel" hidden>
+        <div class="callout">
+          <strong>Drawing the boundary</strong>
+          <p>Tap each corner of your field on the map. The area is worked out
+             for you. You need this before the project is submitted, but not
+             today.</p>
+        </div>
+        <div class="boundary-actions">
+          <button class="btn btn-secondary" type="button" id="btn-boundary-undo">Undo last point</button>
+          <button class="btn btn-secondary" type="button" id="btn-boundary-clear">Clear</button>
+        </div>
+        <p class="hint" id="boundary-status" aria-live="polite">No points marked yet.</p>
+      </div>
+
+      <button class="btn btn-primary btn-block" type="submit">Save this field</button>
+    </form>
+  </div>
+</section>
+
+<!-- =====================================================================
+     7. ELIGIBILITY
+     ================================================================== -->
+<section class="screen" data-screen="eligibility" hidden>
+  <div class="wrap">
+    <h1 class="screen-title">A few checks</h1>
+    <p class="screen-sub">
+      These decide whether your field can join. Answer honestly — a wrong
+      answer here is found later by the verifier, and the whole season is lost.
+    </p>
+    <form id="form-eligibility" novalidate>
+      <div id="elig-questions"></div>
+      <button class="btn btn-primary btn-block" type="submit">Check my field</button>
+    </form>
+  </div>
+</section>
+
+<!-- =====================================================================
+     8. ELIGIBILITY RESULT
+     ================================================================== -->
+<section class="screen" data-screen="eligibility-result" hidden>
+  <div class="wrap">
+    <div class="result-head" id="elig-head">
+      <span class="result-icon" id="elig-icon" aria-hidden="true"></span>
+      <h1 class="screen-title" id="elig-title"></h1>
+    </div>
+
+    <div id="elig-blocking"></div>
+    <div id="elig-flags"></div>
+    <div id="elig-notes"></div>
+
+    <div class="callout">
+      <strong>What this is</strong>
+      <p id="elig-disclaimer"></p>
+    </div>
+
+    <button class="btn btn-primary btn-block" id="btn-elig-continue">Continue</button>
+    <button class="linkbtn" data-go="eligibility">Change my answers</button>
+  </div>
+</section>
+
+<!-- =====================================================================
+     9. DASHBOARD
+     ================================================================== -->
+<section class="screen" data-screen="dashboard" hidden>
+  <div class="wrap">
+    <p class="greeting" id="dash-greeting"></p>
+
+    <div class="progress-card">
+      <div class="journey-topline">
+        <span class="journey-season">This season</span>
+        <span class="journey-count" id="dash-progress-count"></span>
+      </div>
+      <span class="card-label journey-label">Your carbon journey</span>
+      <ol class="progress" id="dash-progress"></ol>
+      <p class="progress-step" id="dash-progress-step"></p>
+      <p class="progress-note" id="dash-progress-note"></p>
+    </div>
+
+    <div class="next-card" id="dash-next">
+      <span class="next-label">Next</span>
+      <h2 class="next-title" id="next-title"></h2>
+      <p class="next-body" id="next-body"></p>
+      <p class="next-time" id="next-time"></p>
+      <button class="btn btn-primary btn-block" id="btn-next-action"></button>
+    </div>
+
+    <div class="card">
+      <span class="card-label">Estimated payment this season</span>
+      <span class="card-money" id="dash-income"></span>
+      <p class="small" id="dash-income-note"></p>
+      <button class="linkbtn" id="btn-advance-open" hidden>
+        I need part of this now
+      </button>
+    </div>
+
+    <div class="card">
+      <span class="card-label">Your field</span>
+      <dl class="kv" id="dash-farm"></dl>
+    </div>
+
+    <div class="card" id="dash-batches-card" hidden>
+      <span class="card-label">Batches this season</span>
+      <ul class="batch-list" id="dash-batches"></ul>
+    </div>
+
+    <div class="card">
+      <span class="card-label">Recent updates</span>
+      <ul class="updates" id="dash-updates"></ul>
+    </div>
+
+    <button class="linkbtn" data-go="terms">Fees and terms</button>
+    <button class="linkbtn linkbtn-danger" id="btn-reset">Reset this demo</button>
+  </div>
+</section>
+
+<!-- =====================================================================
+     10. TRAINING
+     ================================================================== -->
+<section class="screen" data-screen="training" hidden>
+  <div class="wrap">
+    <h1 class="screen-title">Making biochar</h1>
+    <p class="screen-sub">Eight short cards. Read them once before your first batch.</p>
+    <div class="train-progress" id="train-progress" aria-live="polite"></div>
+    <div id="train-card"></div>
+    <div class="train-nav">
+      <button class="btn btn-secondary" id="btn-train-prev">Back</button>
+      <button class="btn btn-primary" id="btn-train-next">Next</button>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     11. EVIDENCE
+     ================================================================== -->
+<section class="screen" data-screen="evidence" hidden>
+  <div class="wrap">
+    <h1 class="screen-title" id="ev-title">New batch</h1>
+    <p class="screen-sub">Three photos and two weights. That is all.</p>
+    <p class="ev-progress" id="ev-progress" aria-live="polite"></p>
+
+    <form id="form-evidence" novalidate>
+      <div class="photo-slot" data-slot="straw">
+        <div class="ps-head">
+          <span class="ps-step">1</span>
+          <div>
+            <strong>The straw you collected</strong>
+            <p class="small">Show the whole heap in daylight.</p>
+          </div>
+          <span class="ps-tick" hidden aria-label="Done">&#10003;</span>
+        </div>
+        <div class="ps-body">
+          <img class="ps-preview" alt="" hidden>
+          <label class="btn btn-secondary btn-block file-btn">
+            <span>Take or choose photo</span>
+            <input type="file" accept="image/*" capture="environment" hidden>
+          </label>
+          <p class="ps-meta small" hidden></p>
+        </div>
+      </div>
+
+      <div class="photo-slot" data-slot="kiln">
+        <div class="ps-head">
+          <span class="ps-step">2</span>
+          <div>
+            <strong>The kiln while it runs</strong>
+            <p class="small">Stand back. Show the flame and the kiln.</p>
+          </div>
+          <span class="ps-tick" hidden aria-label="Done">&#10003;</span>
+        </div>
+        <div class="ps-body">
+          <img class="ps-preview" alt="" hidden>
+          <label class="btn btn-secondary btn-block file-btn">
+            <span>Take or choose photo</span>
+            <input type="file" accept="image/*" capture="environment" hidden>
+          </label>
+          <p class="ps-meta small" hidden></p>
+        </div>
+      </div>
+
+      <div class="photo-slot" data-slot="biochar">
+        <div class="ps-head">
+          <span class="ps-step">3</span>
+          <div>
+            <strong>The finished biochar</strong>
+            <p class="small">Black and crumbly, not grey ash.</p>
+          </div>
+          <span class="ps-tick" hidden aria-label="Done">&#10003;</span>
+        </div>
+        <div class="ps-body">
+          <img class="ps-preview" alt="" hidden>
+          <label class="btn btn-secondary btn-block file-btn">
+            <span>Take or choose photo</span>
+            <input type="file" accept="image/*" capture="environment" hidden>
+          </label>
+          <p class="ps-meta small" hidden></p>
+        </div>
+      </div>
+
+      <div class="weight-card">
+        <div class="ps-head">
+          <span class="ps-step">4</span>
+          <div>
+            <strong>Weights</strong>
+            <p class="small">Roughly is fine. Use the sacks you filled.</p>
+          </div>
+        </div>
+        <div class="weight-row">
+          <div class="field">
+            <label class="label-sm" for="ev-straw">Straw in</label>
+            <div class="input-suffix">
+              <input class="input" id="ev-straw" type="number" inputmode="decimal"
+                     step="1" min="1" placeholder="400">
+              <span class="suffix">kg</span>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label-sm" for="ev-biochar">Biochar out</label>
+            <div class="input-suffix">
+              <input class="input" id="ev-biochar" type="number" inputmode="decimal"
+                     step="1" min="1" placeholder="110">
+              <span class="suffix">kg</span>
+            </div>
+          </div>
+        </div>
+        <p class="hint" id="ev-yield-hint"></p>
+      </div>
+
+      <div class="gps-card">
+        <div class="ps-head">
+          <span class="ps-step">5</span>
+          <div>
+            <strong>Where this batch was made</strong>
+            <p class="small">Confirms it came from your registered field.</p>
+          </div>
+          <span class="ps-tick" id="ev-gps-tick" hidden aria-label="Done">&#10003;</span>
+        </div>
+        <button class="btn btn-secondary btn-block" type="button" id="btn-ev-locate">
+          Share my location
+        </button>
+        <p class="hint" id="ev-gps-status" aria-live="polite"></p>
+        <details class="disclose" id="ev-gps-manual">
+          <summary>Enter the location by hand instead</summary>
+          <div class="manual-coords">
+            <div class="coord">
+              <label class="label-sm" for="ev-lat">Latitude</label>
+              <input class="input input-sm" id="ev-lat" type="number" step="any" inputmode="decimal">
+            </div>
+            <div class="coord">
+              <label class="label-sm" for="ev-lng">Longitude</label>
+              <input class="input input-sm" id="ev-lng" type="number" step="any" inputmode="decimal">
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-block" type="button" id="btn-ev-manual-loc">
+            Use these coordinates
+          </button>
+        </details>
+      </div>
+
+      <p class="err" id="ev-err" role="alert" hidden></p>
+      <button class="btn btn-primary btn-block" type="submit" id="btn-ev-submit">
+        Check this batch
+      </button>
+      <p class="hint center">We check it before it goes anywhere.</p>
+    </form>
+  </div>
+</section>
+
+<!-- =====================================================================
+     12. QUALITY CHECK RESULT
+     ================================================================== -->
+<section class="screen" data-screen="quality" hidden>
+  <div class="wrap">
+    <div class="result-head">
+      <span class="result-icon" id="qc-icon" aria-hidden="true"></span>
+      <h1 class="screen-title" id="qc-title"></h1>
+    </div>
+    <p class="screen-sub" id="qc-summary"></p>
+
+    <div id="qc-issues"></div>
+    <div id="qc-warnings"></div>
+
+    <div class="callout callout-sat" id="qc-satellite" hidden>
+      <strong id="qc-sat-head"></strong>
+      <p id="qc-sat-detail"></p>
+      <p class="small" id="qc-sat-note"></p>
+    </div>
+
+    <details class="disclose" id="qc-passed-wrap">
+      <summary>What passed</summary>
+      <ul class="tick-list" id="qc-passed"></ul>
+    </details>
+
+    <div class="callout">
+      <strong>What this check is</strong>
+      <p id="qc-disclaimer"></p>
+    </div>
+
+    <button class="btn btn-primary btn-block" id="btn-qc-primary"></button>
+    <button class="linkbtn" id="btn-qc-secondary" hidden></button>
+  </div>
+</section>
+
+<!-- =====================================================================
+     13. VERIFICATION TRACKING
+     ================================================================== -->
+<section class="screen" data-screen="verification" hidden>
+  <div class="wrap">
+    <h1 class="screen-title">Independent verification</h1>
+    <p class="screen-sub">
+      CarbonBridge handles the paperwork and the verifier. You are only
+      contacted if something is needed from you.
+    </p>
+
+    <div class="card">
+      <span class="card-label">Verifier</span>
+      <p class="card-strong">{{ demo.verifier }}</p>
+      <p class="small">A stand-in name for this prototype. A real project
+         uses an accredited independent verifier.</p>
+    </div>
+
+    <ol class="vtrack" id="v-track"></ol>
+
+    <div class="card">
+      <span class="card-label">In this package</span>
+      <dl class="kv" id="v-package"></dl>
+    </div>
+
+    <button class="btn btn-primary btn-block" id="btn-v-advance"></button>
+    <button class="linkbtn" data-go="dashboard">Back to home</button>
+  </div>
+</section>
+
+<!-- =====================================================================
+     14. ADDITIONAL EVIDENCE REQUEST
+     ================================================================== -->
+<section class="screen" data-screen="more-evidence" hidden>
+  <div class="wrap">
+    <div class="result-head">
+      <span class="result-icon icon-warn" aria-hidden="true">!</span>
+      <h1 class="screen-title">One more photo needed</h1>
+    </div>
+    <div class="callout callout-warn">
+      <strong>From the independent verifier</strong>
+      <p>
+        The verifier has asked for one photo of the biochar after it was
+        spread on the field. They need to see that it went back into the
+        soil rather than being sold on.
+      </p>
+      <p class="small">Requested on 20 October 2026. Please reply within seven days.</p>
+    </div>
+
+    <div class="photo-slot" data-slot="applied">
+      <div class="ps-head">
+        <span class="ps-step">1</span>
+        <div>
+          <strong>Biochar spread on the field</strong>
+          <p class="small">Show the ground with biochar worked into it.</p>
+        </div>
+        <span class="ps-tick" hidden aria-label="Done">&#10003;</span>
+      </div>
+      <div class="ps-body">
+        <img class="ps-preview" alt="" hidden>
+        <label class="btn btn-secondary btn-block file-btn">
+          <span>Take or choose photo</span>
+          <input type="file" accept="image/*" capture="environment" hidden>
+        </label>
+        <p class="ps-meta small" hidden></p>
+      </div>
+    </div>
+
+    <p class="err" id="me-err" role="alert" hidden></p>
+    <button class="btn btn-primary btn-block" id="btn-me-submit">
+      Send to the verifier
+    </button>
+  </div>
+</section>
+
+<!-- =====================================================================
+     15. CREDITS ISSUED
+     ================================================================== -->
+<section class="screen" data-screen="issued" hidden>
+  <div class="wrap">
+    <div class="result-head">
+      <span class="result-icon icon-good" aria-hidden="true">&#10003;</span>
+      <h1 class="screen-title">Carbon credits issued</h1>
+    </div>
+
+    <div class="credit-card">
+      <span class="credit-total" id="iss-total"></span>
+      <span class="credit-total-label">verified carbon removal credits</span>
+    </div>
+
+    <div class="split">
+      <div class="split-part split-now">
+        <span class="split-value" id="iss-now"></span>
+        <span class="split-label">Can be sold now</span>
+      </div>
+      <div class="split-part split-held">
+        <span class="split-value" id="iss-held"></span>
+        <span class="split-label">Held as a safeguard</span>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>What this covers</strong>
+      <p id="iss-context"></p>
+    </div>
+
+    <div class="callout">
+      <strong>Why part of it is held</strong>
+      <p id="iss-safeguard"></p>
+    </div>
+
+    <div class="card">
+      <span class="card-label">Registry record</span>
+      <dl class="kv" id="iss-record"></dl>
+    </div>
+
+    <div class="callout">
+      <strong>Who did what</strong>
+      <p>
+        Verified by an independent verifier. Issued through the relevant
+        carbon registry. CarbonBridge prepared the package and submitted it —
+        it does not verify or issue anything itself.
+      </p>
+    </div>
+
+    <button class="btn btn-primary btn-block" id="btn-iss-continue">
+      See the sale
+    </button>
+  </div>
+</section>
+
+<!-- =====================================================================
+     16. SALE
+     ================================================================== -->
+<section class="screen" data-screen="sale" hidden>
+  <div class="wrap">
+    <h1 class="screen-title">Selling your credits</h1>
+
+    <ol class="vtrack" id="sale-track"></ol>
+
+    <div class="card" id="sale-buyer-card" hidden>
+      <span class="card-label">Buyer</span>
+      <p class="card-strong">{{ demo.buyer }}</p>
+      <p class="small">
+        A stand-in name for this prototype. Buyers of removal credits are
+        usually large companies meeting their own climate targets.
+      </p>
+    </div>
+
+    <div class="card">
+      <span class="card-label">Credit status</span>
+      <ol class="chain" id="sale-chain"></ol>
+      <p class="small">
+        Each credit carries a serial number from the registry. Once a credit
+        is sold and retired, that serial can never be sold again.
+      </p>
+    </div>
+
+    <button class="btn btn-primary btn-block" id="btn-sale-advance"></button>
+    <button class="linkbtn" data-go="dashboard">Back to home</button>
+  </div>
+</section>
+
+<!-- =====================================================================
+     17. PAYMENT COMPLETE
+     ================================================================== -->
+<section class="screen" data-screen="payment" hidden>
+  <div class="wrap">
+    <div class="result-head">
+      <span class="result-icon icon-good" aria-hidden="true">&#10003;</span>
+      <h1 class="screen-title">Payment completed</h1>
+    </div>
+
+    <div class="money-card money-card-good">
+      <span class="money-value" id="pay-amount"></span>
+      <span class="money-note">has been transferred to your account</span>
+    </div>
+
+    <div class="card">
+      <span class="card-label">Details</span>
+      <dl class="kv" id="pay-details"></dl>
+    </div>
+
+    <div class="callout" id="pay-advance-box" hidden>
+      <strong>Early payment deducted</strong>
+      <p id="pay-advance-note"></p>
+    </div>
+
+    <div class="callout">
+      <strong>Still to come</strong>
+      <p id="pay-held-note"></p>
+    </div>
+
+    <div class="callout">
+      <strong>Next season</strong>
+      <p>
+        Credits are earned one season at a time. To earn again you make
+        biochar again next season, and it is verified again. Nothing carries
+        over automatically.
+      </p>
+    </div>
+
+    <button class="btn btn-primary btn-block" id="btn-next-season">
+      Join the next rice season
+    </button>
+    <button class="linkbtn" data-go="dashboard">Back to home</button>
+  </div>
+</section>
+
+<!-- =====================================================================
+     18. TERMS
+     ================================================================== -->
+<section class="screen" data-screen="terms" hidden>
+  <div class="wrap">
+    <h1 class="screen-title">Fees and terms</h1>
+    <p class="screen-sub">
+      The home screen stays simple on purpose. Everything is set out in full
+      here.
+    </p>
+
+    <div class="card">
+      <span class="card-label">What you never pay</span>
+      <ul class="tick-list">
+        <li>No joining fee.</li>
+        <li>No charge for the kiln or for training.</li>
+        <li>No verification or registry fee paid by you, at any point.</li>
+        <li>No charge if your project is not approved.</li>
+      </ul>
+    </div>
+
+    <section class="amount-explainer terms-allocation" aria-labelledby="terms-share-title">
+      <div class="amount-explainer-head">
+        <span class="card-label">Where the money goes</span>
+        <h2 id="terms-share-title">For every 100 VND a buyer pays</h2>
+        <p>Costs come from the credit sale, never as a charge to you.</p>
+      </div>
+      <ul class="allocation-list" id="terms-split"></ul>
+    </section>
+
+    <div class="card">
+      <span class="card-label">How your estimate is worked out</span>
+      <ol class="stage-list" id="terms-chain"></ol>
+    </div>
+
+    <div class="card">
+      <span class="card-label">Early payment</span>
+      <p class="small">
+        You can take part of your expected payment before the credits sell.
+        The amount taken early is deducted from your final payment, along
+        with a fixed service charge shown before you agree. If the credits
+        sell for less than expected, you keep what you were already paid —
+        we carry that risk, not you.
+      </p>
+    </div>
+
+    <div class="card">
+      <span class="card-label">What is not guaranteed</span>
+      <ul class="tick-list tick-list-warn">
+        <li>Carbon income is not a guaranteed payment.</li>
+        <li>An independent verifier may reduce or reject the claimed amount.</li>
+        <li>Credit prices move, so the final figure can differ from the estimate.</li>
+        <li>Weather or a poor harvest can reduce how much straw you have.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <span class="card-label">Leaving, and complaints</span>
+      <p class="small">
+        You can leave at any time before the verification package is
+        submitted, at no cost. After submission you can still leave, but
+        credits already issued for that season stay with the project. To
+        complain, speak to your local CarbonBridge field officer, or contact
+        the farmer representative on the programme committee. If it is still
+        unresolved, it goes to the independent grievance line printed on your
+        contract.
+      </p>
+    </div>
+
+    <div class="card">
+      <span class="card-label">Your data</span>
+      <p class="small">
+        Your photos, weights and field location belong to you. You can ask
+        for a copy or ask us to delete them. Withdrawing consent removes your
+        field from the project. Buyers only ever see totals, never your name
+        or your photos.
+      </p>
+    </div>
+
+    <button class="btn btn-secondary btn-block" id="btn-terms-back">Back</button>
+  </div>
+</section>
+
+</main>
+
+<!-- Advance payment dialog -->
+<div class="modal" id="advance-modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="adv-title">
+    <h2 class="modal-title" id="adv-title">Take part of your payment early</h2>
+    <p class="small">
+      Your credits have not sold yet. You can take part of what you expect to
+      earn now, and it is deducted when the sale completes.
+    </p>
+    <div class="field">
+      <label class="label-sm" for="adv-amount">How much do you need?</label>
+      <div class="input-suffix">
+        <span class="prefix">&#8363;</span>
+        <input class="input" id="adv-amount" type="number" inputmode="numeric" step="100" min="0">
+      </div>
+      <p class="hint" id="adv-max"></p>
+    </div>
+    <div class="adv-summary" id="adv-summary"></div>
+    <p class="err" id="adv-err" role="alert" hidden></p>
+    <button class="btn btn-primary btn-block" id="btn-adv-confirm">Confirm</button>
+    <button class="btn btn-secondary btn-block" id="btn-adv-cancel">Cancel</button>
+  </div>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+window.SB_DEMO = {{ demo | tojson }};
+window.SB_TRAINING = {{ training_cards | tojson }};
+window.SB_CONST = {{ constants | tojson }};
+</script>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

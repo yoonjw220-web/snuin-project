@@ -216,3 +216,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# CarbonBridge: uploaded evidence photos are runtime data, not source.
+# app.py recreates this directory on startup (os.makedirs).
+static/uploads/*
+!static/uploads/.gitkeep
